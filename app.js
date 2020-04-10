@@ -9,7 +9,7 @@ const MongoStore = require('connect-mongo')(session);
 
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// var usersRouter = require('./routes/users');
 var tasksRouter = require('./routes/tasks');
 var signupRouter = require('./routes/signup')
 
@@ -22,10 +22,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// app.use('/users', usersRouter);
 app.use('/', signupRouter);
 // app.use('/auth/signup', require("./routes/signup"));
 app.use('/tasks', tasksRouter);
+
+//login:
+app.use('/', require("./routes/login"));
 
 //session
 app.use(session({
@@ -38,23 +41,23 @@ app.use(session({
       ttl: 24 * 60 * 60 // 1 day
   })
 }));
+
 // login
-app.use(function(req,res,next){
-  res.locals.isloggedin = false;
-  if(req.session.isloggedin){
-      res.locals.user = req.session.user;
-      res.locals.isloggedin = true;
-  }
-  next();
-})
-//masik ize
+// app.use(function(req,res,next){
+//   res.locals.isloggedin = false;
+//   if(req.session.isloggedin){
+//       res.locals.user = req.session.user;
+//       res.locals.isloggedin = true;
+//   }
+//   next();
+// })
+
+//other session stuff
 app.use(function (req, res, next) {
   res.locals.session = req.session;
   next();
 });
 
-//login:
-app.use('/', require("./routes/login"));
 
 //db connection
 mongoose
