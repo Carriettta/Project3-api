@@ -7,62 +7,59 @@ var mongoose = require('mongoose');
 var session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
 
-
-var indexRouter = require('./routes/index');
-// var usersRouter = require('./routes/users');
-var tasksRouter = require('./routes/tasks');
-var signupRouter = require('./routes/signup')
-
 var app = express();
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', indexRouter);
-// app.use('/users', usersRouter);
-app.use('/', signupRouter);
-// app.use('/auth/signup', require("./routes/signup"));
-app.use('/tasks', tasksRouter);
-
-//login:
-app.use('/', require("./routes/login"));
 
 //session
 app.use(session({
   secret: "basic-auth-secret",
   cookie: {
-      maxAge: 6000000
+    maxAge: 6000000
   },
   store: new MongoStore({
-      mongooseConnection: mongoose.connection,
-      ttl: 24 * 60 * 60 // 1 day
+    mongooseConnection: mongoose.connection,
+    ttl: 24 * 60 * 60 // 1 day
   })
 }));
 
-// login
-// app.use(function(req,res,next){
-//   res.locals.isloggedin = false;
-//   if(req.session.isloggedin){
-//       res.locals.user = req.session.user;
-//       res.locals.isloggedin = true;
-//   }
-//   next();
-// })
+//protect
+function protect(req, res, next) {
+  if (req.session.user) {
+    next();
+  } else {
+    res.status(403).json({
+      message: "not logged in"
+    });
+  }
+}
 
-//other session stuff
-app.use(function (req, res, next) {
-  res.locals.session = req.session;
-  next();
-});
-
+//routes
+app.use('/', require('./routes/index'));
+app.use('/', require('./routes/signup'));
+app.use('/', require("./routes/login"));
+// app.use('/', protect, require('./routes/tasks'));
 
 //db connection
 mongoose
-  .connect('mongodb://localhost/Project3', {useNewUrlParser: true})
+  .connect('mongodb://localhost/Project3', {
+    useNewUrlParser: true
+  })
   .then(x => console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`))
   .catch(err => console.error('Error connecting to mongo', err));
 
 module.exports = app;
+
+// var usersRouter = require('./routes/users');
+// app.use('/users', usersRouter);
+// var indexRouter = require('./routes/index');
+// var signupRouter = require('./routes/signup')
+// var tasksRouter = require('./routes/tasks');
+// app.use('/auth/signup', require("./routes/signup"));
+// app.use('/tasks', require('./routes/tasks');
