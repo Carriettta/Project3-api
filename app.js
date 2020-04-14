@@ -43,8 +43,8 @@ function protect(req, res, next) {
 //routes
 app.use('/', require('./routes/index'));
 app.use('/', require('./routes/signup'));
-app.use('/', require("./routes/login"));
-// app.use('/', protect, require('./routes/tasks'));
+app.use('/', require('./routes/login'));
+app.use('/', require('./routes/tasks'));
 
 //db connection
 mongoose
