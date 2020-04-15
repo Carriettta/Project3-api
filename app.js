@@ -8,7 +8,10 @@ var session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
 
 var app = express();
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:3001", "https://localhost:3001"],
+  credentials: true
+}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({
@@ -45,6 +48,7 @@ app.use('/', require('./routes/index'));
 app.use('/', require('./routes/signup'));
 app.use('/', require('./routes/login'));
 app.use('/', require('./routes/tasks'));
+app.use('/auth', require('./routes/logout'));
 
 //db connection
 mongoose

@@ -7,3 +7,5 @@ router.get("/logout", (req, res, next) => { // destroys the current user session
         else res.send('OK')
     })
 });
+
+module.exports = router;

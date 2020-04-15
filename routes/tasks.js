@@ -4,7 +4,7 @@ const Task = require('../models/Task')
 //C
 router.post("/add", (req, res) => {
   Task
-    .create(req.body)
+    .create({title: req.body.title, owner: req.session.user._id})
     .then((task) => {
       res.json(task);
     })
@@ -19,7 +19,7 @@ router.get('/tasks', function (req, res, next) {
   // res.json([{ title: '1st task title, this is' }]);
   Task
     .find({
-      // creator: req.session.user._id
+        owner: req.session.user._id
     })
     // .sort({
     //   start: -1
