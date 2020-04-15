@@ -12,18 +12,17 @@ router.post("/auth/login", (req, res, next) => { // this login
     const password = req.body.password;
 
     if (username === "" || password === "") { //username and password checks
-        res.json({
+        res.send("/login", {
             errorMessage: "No user name or password given"
         });
         return;
     }
-
     User.findOne({
             "username": username
         }) // checking if usename is in the DB
         .then(user => {
             if (!user) { //if not in DB send user back to login and throw error
-                res.json({
+                res.send("/login", {
                     errorMessage: "The username does not exists!"
                 });
                 return;
@@ -35,12 +34,11 @@ router.post("/auth/login", (req, res, next) => { // this login
                     // req.session.isloggedin = true // setting up the session and redirecting the use to the main page
                     req.session.user = user // storing user info in the current session so we can access the user ID
                     //req.session.save(function (err) {
-                        // res.redirect('/trips')
-                    console.log("TEST")
+                    // res.redirect('/trips')
                     res.send(user)
                     //})
                 } else {
-                    res.json({
+                    res.send("/login", {
                         errorMessage: "Wrong Password!" // incase wrong info input
                     });
                     return;

@@ -4,7 +4,10 @@ const Task = require('../models/Task')
 //C
 router.post("/add", (req, res) => {
   Task
-    .create({title: req.body.title, owner: req.session.user._id})
+    .create({
+      title: req.body.title,
+      owner: req.session.user._id
+    })
     .then((task) => {
       res.json(task);
     })
@@ -19,7 +22,7 @@ router.get('/tasks', function (req, res, next) {
   // res.json([{ title: '1st task title, this is' }]);
   Task
     .find({
-        owner: req.session.user._id
+      owner: req.session.user._id
     })
     // .sort({
     //   start: -1
@@ -35,5 +38,17 @@ router.get('/tasks', function (req, res, next) {
 });
 //U
 //D
+router.get("/tasks/delete/:id", (req, res, next) => {
+  Task
+    .findByIdAndDelete(req.params.id)
+    .then((tasks) => {
+      res.json(tasks);
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: "err"
+      });
+    })
+})
 //export
 module.exports = router;

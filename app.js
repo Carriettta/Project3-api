@@ -48,7 +48,7 @@ app.use('/', require('./routes/index'));
 app.use('/', require('./routes/signup'));
 app.use('/', require('./routes/login'));
 app.use('/', require('./routes/tasks'));
-app.use('/auth', require('./routes/logout'));
+app.use('/', require('./routes/logout'));
 
 //db connection
 mongoose
