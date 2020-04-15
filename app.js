@@ -52,18 +52,10 @@ app.use('/', require('./routes/logout'));
 
 //db connection
 mongoose
-  .connect('mongodb://localhost/Project3', {
+  .connect('mongodb+srv://admin:gM7DzaNemGafwz3f@project3-n9wz1.mongodb.net/Project3?retryWrites=true&w=majority', {
     useNewUrlParser: true
   })
   .then(x => console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`))
   .catch(err => console.error('Error connecting to mongo', err));
 
 module.exports = app;
-
-// var usersRouter = require('./routes/users');
-// app.use('/users', usersRouter);
-// var indexRouter = require('./routes/index');
-// var signupRouter = require('./routes/signup')
-// var tasksRouter = require('./routes/tasks');
-// app.use('/auth/signup', require("./routes/signup"));
-// app.use('/tasks', require('./routes/tasks');

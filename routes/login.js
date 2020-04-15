@@ -7,14 +7,13 @@ const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
 router.post("/auth/login", (req, res, next) => { // this login 
-    // req.session.isloggedin=0
     const username = req.body.username; //these are the login form values
     const password = req.body.password;
-
     if (username === "" || password === "") { //username and password checks
-        res.send("/login", {
-            errorMessage: "No user name or password given"
-        });
+        res.status(401)
+            .json({
+                errorMessage: "No user name or password given"
+            });
         return;
     }
     User.findOne({
@@ -22,25 +21,22 @@ router.post("/auth/login", (req, res, next) => { // this login
         }) // checking if usename is in the DB
         .then(user => {
             if (!user) { //if not in DB send user back to login and throw error
-                res.send("/login", {
-                    errorMessage: "The username does not exists!"
-                });
+                res.status(401)
+                    .json({
+                        errorMessage: "The username does not exists!"
+                    });
                 return;
             }
             bcrypt.compare(password, user.password, (err, result) => { //bcrypt password check between user entered password and the password in the DB
                 debugger
                 if (result) {
-                    // req.session.save()
-                    // req.session.isloggedin = true // setting up the session and redirecting the use to the main page
                     req.session.user = user // storing user info in the current session so we can access the user ID
-                    //req.session.save(function (err) {
-                    // res.redirect('/trips')
                     res.send(user)
-                    //})
                 } else {
-                    res.send("/login", {
-                        errorMessage: "Wrong Password!" // incase wrong info input
-                    });
+                    res.status(401)
+                        .json({
+                            errorMessage: "Wrong Password!" // incase wrong info input
+                        });
                     return;
                 }
             })
@@ -49,5 +45,4 @@ router.post("/auth/login", (req, res, next) => { // this login
             res.json(error);
         })
 });
-
 module.exports = router;
