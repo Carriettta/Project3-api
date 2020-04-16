@@ -6,10 +6,11 @@ var cors = require('cors')
 var mongoose = require('mongoose');
 var session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
-
+var bodyParser = require('body-parser')
+require("dotenv").config();
 var app = express();
 app.use(cors({
-  origin: ["http://localhost:3001", "https://localhost:3001"],
+  origin: [`${process.env.client_origin_a}`, `${process.env.client_origin_b}`],
   credentials: true
 }));
 app.use(logger('dev'));
@@ -22,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //session
 app.use(session({
-  secret: "basic-auth-secret",
+  secret: `${process.env.SESSION_SECRET}`,
   cookie: {
     maxAge: 6000000
   },
@@ -43,6 +44,10 @@ function protect(req, res, next) {
   }
 }
 
+app.use(bodyParser.urlencoded({ 
+  extended: true 
+}));
+
 //routes
 app.use('/', require('./routes/index'));
 app.use('/', require('./routes/signup'));
@@ -52,7 +57,7 @@ app.use('/', require('./routes/logout'));
 
 //db connection
 mongoose
-  .connect('mongodb+srv://admin:gM7DzaNemGafwz3f@project3-n9wz1.mongodb.net/Project3?retryWrites=true&w=majority', {
+  .connect(`${process.env.mongodb_connection_string}`, {
     useNewUrlParser: true
   })
   .then(x => console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`))

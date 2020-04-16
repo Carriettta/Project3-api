@@ -37,6 +37,34 @@ router.get('/tasks', function (req, res, next) {
     })
 });
 //U
+router.get("/tasks/update/:id", (req, res, next) => {
+  Task
+      .findById(req.params.id)
+      .then((task) => {
+        console.log(task)  
+        res.json(task);
+      })
+      .catch((err) => {
+        res.status(500).json({
+          message: "err"
+        });
+      })
+})
+router.post("/tasks/update/:id", (req, res, next) => {
+  console.log(req.body)
+  Task
+      .findByIdAndUpdate(req.params.id, {
+        title: req.body.title,
+      })
+      .then((tasks) => {
+        res.json(tasks);
+      })
+      .catch((err) => {
+        res.status(500).json({
+          message: "err"
+        });
+      })
+})
 //D
 router.get("/tasks/delete/:id", (req, res, next) => {
   Task
